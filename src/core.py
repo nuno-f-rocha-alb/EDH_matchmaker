@@ -595,7 +595,7 @@ class Tournament:
             if not isinstance(players, list):
                 players = [players]
             for p in players:
-                Log.log('Reporting player {} got second this round.'.format(p.name))
+                Log.log('Reporting player {} got third this round.'.format(p.name))
             self.round.third_place(players)
 
     @TournamentAction.action
@@ -604,7 +604,7 @@ class Tournament:
             if not isinstance(players, list):
                 players = [players]
             for p in players:
-                Log.log('Reporting player {} got second this round.'.format(p.name))
+                Log.log('Reporting player {} got fourth this round.'.format(p.name))
             self.round.fourth_place(players)
 
     @TournamentAction.action

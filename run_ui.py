@@ -403,6 +403,45 @@ class MainWindow(QMainWindow):
         for i in reversed(range(layout.count())):
             widget = layout.itemAt(i).widget()
             widget.refresh_ui()
+    
+    def ui_change_player_background(self, player: Player, pos):
+        # Find the PodWidget that contains the specific player
+        pod_widget = None
+        for widget in self.ui.saw_content.children():
+            if isinstance(widget, PodWidget):
+                if any(p == player for p in widget.pod.players):
+                    pod_widget = widget
+                    break
+
+        if not pod_widget:
+            return
+
+        lw_players = pod_widget.findChild(QListWidget, "lw_players")
+        if not lw_players:
+            return
+
+        # Set the color based on the position
+        if pos == 1:
+            color = QColor(147, 197, 114, 127)  # First place color
+        elif pos == 2:
+            color = QColor(201, 204, 63, 127)  # Second place color
+        elif pos == 3:
+            color = QColor(255, 170, 51, 127)  # Third place color
+        elif pos == 4:
+            color = QColor(255, 0, 0, 127)  # Fourth place color
+        else:
+            color = QColor('white')  # Default color for other positions
+
+        # Change the background color of the player in the lw_players
+        for i in range(lw_players.count()):
+            item = lw_players.item(i)
+            data = item.data(Qt.ItemDataRole.UserRole)
+            if data == player:
+                item.setBackground(color)
+                break
+
+        # Force repaint the ListWidget
+        lw_players.viewport().update()
 
     def confirm(self, message, title=''):
         reply = QMessageBox()
@@ -457,14 +496,20 @@ class MainWindow(QMainWindow):
     def report_second_place(self, player: Player):
         self.core.report_second_place(player)
         self.ui_update_player_list()
+        #self.ui_update_pods()
+        self.ui_change_player_background(player, 2)
 
     def report_third_place(self, player: Player):
         self.core.report_third_place(player)
         self.ui_update_player_list()
+        #self.ui_update_pods()
+        self.ui_change_player_background(player, 3)
 
     def report_fourth_place(self, player: Player):
         self.core.report_fourth_place(player)
         self.ui_update_player_list()
+        #self.ui_update_pods()
+        self.ui_change_player_background(player, 4)
 
     @UILog.with_status
     def report_draw(self, players: Player):

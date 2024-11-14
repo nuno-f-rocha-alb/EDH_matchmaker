@@ -1,20 +1,20 @@
 Pod 0 with 4 players and seats:
-	[W] João Brito      | pts: 11 | seat: 67%	
-	[L] Tiago Dantas    | pts: 11 | seat: 56%	
-	[L] Daniel Abrantes | pts: 6 | seat: 44%	
-	[L] José Velez      | pts: 8 | seat: 33%	
+	[W] José Pedro      | pts: 14 | seat: 60%	
+	[L] José Velez      | pts: 14 | seat: 53%	
+	[L] João Brito      | pts: 17 | seat: 47%	
+	[L] Emanuel Dias    | pts: 10 | seat: 40%	
 
 Pod 1 with 3 players and seats:
-	[W] Nuno Rocha      | pts: 10 | seat: 50%	
-	[L] Luis Bastião    | pts: 8 | seat: 44%	
-	[L] Diogo Sequeira  | pts: 10 | seat: 44%	
+	[L] Tiago Dantas    | pts: 18 | seat: 53%	
+	[W] Edgar Martins   | pts: 16 | seat: 50%	
+	[L] Gil Dias        | pts: 10 | seat: 43%	
 
 Pod 2 with 3 players and seats:
-	[L] José Pedro      | pts: 8 | seat: 50%	
-	[L] Emanuel Dias    | pts: 7 | seat: 50%	
-	[W] Mario Gomes     | pts: 10 | seat: 56%	
+	[L] Luis Bastião    | pts: 14 | seat: 57%	
+	[L] Manuel Lourenço | pts: 11 | seat: 53%	
+	[W] Nuno Rocha      | pts: 18 | seat: 50%	
 
 Pod 3 with 3 players and seats:
-	[L] Manuel Lourenço | pts: 7 | seat: 50%	
-	[L] Gil Dias        | pts: 6 | seat: 39%	
-	[W] Edgar Martins   | pts: 9 | seat: 67%	
+	[L] Diogo Sequeira  | pts: 14 | seat: 47%	
+	[L] Mario Gomes     | pts: 16 | seat: 50%	
+	[W] Daniel Abrantes | pts: 13 | seat: 47%	
