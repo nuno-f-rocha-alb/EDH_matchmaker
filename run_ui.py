@@ -454,6 +454,18 @@ class MainWindow(QMainWindow):
         self.core.report_win(player)
         self.ui_update_player_list()
 
+    def report_second_place(self, player: Player):
+        self.core.report_second_place(player)
+        self.ui_update_player_list()
+
+    def report_third_place(self, player: Player):
+        self.core.report_third_place(player)
+        self.ui_update_player_list()
+
+    def report_fourth_place(self, player: Player):
+        self.core.report_fourth_place(player)
+        self.ui_update_player_list()
+
     @UILog.with_status
     def report_draw(self, players: Player):
         Log.log('Reporting draw for players: {}.'.format(
@@ -560,8 +572,13 @@ class PodWidget(QWidget):
         # Check if it is on the item when you right-click, if it is not, delete and modify will not be displayed.
         if self.ui.lw_players.itemAt(position):
             if n_selected == 1:
-                pop_menu.addAction(
-                    QAction('Report win', self, triggered=self.report_win))
+                position_menu = pop_menu.addMenu('Positions')
+                position_menu.addAction(QAction('Report win', self, triggered=self.report_win))
+                position_menu.addAction(QAction('Report Second Place', self, triggered=self.report_second_place))
+                position_menu.addAction(QAction('Report Third Place', self, triggered=self.report_third_place))
+                position_menu.addAction(QAction('Report Fourth Place', self, triggered=self.report_fourth_place))
+                #pop_menu.addAction(
+                #    QAction('Report win', self, triggered=self.report_win))
             else:
                 pop_menu.addAction(
                     QAction('Report draw', self, triggered=self.report_draw))
@@ -605,11 +622,35 @@ class PodWidget(QWidget):
 
     def report_win(self):
         player = self.lw_players.currentItem().data(Qt.ItemDataRole.UserRole)
-        ok = self.app.confirm('Report player {} won?'.format(
+        ok = self.app.confirm('Report player {} Won?'.format(
             player.name), 'Confirm result')
         if ok:
             self.app.report_win(player)
             self.deleteLater()
+
+    def report_second_place(self):
+        player = self.lw_players.currentItem().data(Qt.ItemDataRole.UserRole)
+        ok = self.app.confirm('Report player {} got Second Place?'.format(
+            player.name), 'Confirm result')
+        if ok:
+            self.app.report_second_place(player)
+            #self.deleteLater()
+
+    def report_third_place(self):
+        player = self.lw_players.currentItem().data(Qt.ItemDataRole.UserRole)
+        ok = self.app.confirm('Report player {} got Third Place?'.format(
+            player.name), 'Confirm result')
+        if ok:
+            self.app.report_third_place(player)
+            #self.deleteLater()
+
+    def report_fourth_place(self):
+        player = self.lw_players.currentItem().data(Qt.ItemDataRole.UserRole)
+        ok = self.app.confirm('Report player {} Fourth Place?'.format(
+            player.name), 'Confirm result')
+        if ok:
+            self.app.report_fourth_place(player)
+            #self.deleteLater()
 
     def report_draw(self):
         players = [
@@ -796,6 +837,9 @@ class TournamentConfigDialog(QDialog):
         self.sb_nRounds.setValue(self.core.TC.n_rounds)
         self.cb_snakePods.setChecked(self.core.TC.snake_pods)
         self.sb_max_byes.setValue(self.core.TC.max_byes)
+        self.sb_second_place_points.setValue(self.core.TC.second_place_points)
+        self.sb_third_place_points.setValue(self.core.TC.third_place_points)
+        self.sb_fourth_place_points.setValue(self.core.TC.fourth_place_points)
         self.ui.cb_auto_export.setChecked(self.core.TC.auto_export)
 
         if TournamentAction.LOGF:
@@ -815,6 +859,9 @@ class TournamentConfigDialog(QDialog):
             win_points = self.sb_win.value(),
             draw_points = self.sb_draw.value(),
             bye_points = self.sb_bye.value(),
+            second_place_points= self.sb_second_place_points.value(),
+            third_place_points=self.sb_third_place_points.value(),
+            fourth_place_points=self.sb_fourth_place_points.value(),
             pod_sizes = self.get_psizes(),
             n_rounds = self.sb_nRounds.value(),
             snake_pods = self.cb_snakePods.isChecked(),

@@ -1,14 +1,20 @@
 Pod 0 with 4 players and seats:
-	1: [  ] James Smith        | pts: 0	
-	2: [  ] William Nemec      | pts: 0	
-	3: [  ] Teresa Dunham      | pts: 0	
-	4: [  ] Victoria Renninger | pts: 0	
+	[W] João Brito      | pts: 11 | seat: 67%	
+	[L] Tiago Dantas    | pts: 11 | seat: 56%	
+	[L] Daniel Abrantes | pts: 6 | seat: 44%	
+	[L] José Velez      | pts: 8 | seat: 33%	
 
-Pod 1 with 4 players and seats:
-	1: [  ] Tracey Proctor    | pts: 0	
-	2: [  ] Felton Konakowitz | pts: 0	
-	3: [  ] Carla Pankey      | pts: 0	
-	4: [  ] Anglea Smith      | pts: 0	
+Pod 1 with 3 players and seats:
+	[W] Nuno Rocha      | pts: 10 | seat: 50%	
+	[L] Luis Bastião    | pts: 8 | seat: 44%	
+	[L] Diogo Sequeira  | pts: 10 | seat: 44%	
 
-Byes:
-Willie Ross	| pts: 0
+Pod 2 with 3 players and seats:
+	[L] José Pedro      | pts: 8 | seat: 50%	
+	[L] Emanuel Dias    | pts: 7 | seat: 50%	
+	[W] Mario Gomes     | pts: 10 | seat: 56%	
+
+Pod 3 with 3 players and seats:
+	[L] Manuel Lourenço | pts: 7 | seat: 50%	
+	[L] Gil Dias        | pts: 6 | seat: 39%	
+	[W] Edgar Martins   | pts: 9 | seat: 67%	

@@ -371,24 +371,41 @@ class TournamentAction:
 
 
 class TournamentConfiguration:
-    def __init__(self, **kwargs):
-        self.pod_sizes = kwargs.get('pod_sizes', [4, 3])
-        self.allow_bye = kwargs.get('allow_bye', False)
-        self.win_points = kwargs.get('win_points', 5)
-        self.bye_points = kwargs.get('bye_points', 2)
-        self.draw_points = kwargs.get('draw_points', 1)
-        self.snake_pods = kwargs.get('snake_pods', False)
-        self.n_rounds = kwargs.get('n_rounds', 5)
-        self.max_byes = kwargs.get('max_byes', 2)
-        self.auto_export = kwargs.get('auto_export', False)
-        self.standings_export = kwargs.get(
-            'standings_export', StandingsExport())
+    # def __init__(self, **kwargs):
+    #     self.pod_sizes = kwargs.get('pod_sizes', [4, 3])
+    #     self.allow_bye = kwargs.get('allow_bye', False)
+    #     self.win_points = kwargs.get('win_points', 5)
+    #     self.bye_points = kwargs.get('bye_points', 2)
+    #     self.draw_points = kwargs.get('draw_points', 1)
+    #     self.snake_pods = kwargs.get('snake_pods', False)
+    #     self.n_rounds = kwargs.get('n_rounds', 5)
+    #     self.max_byes = kwargs.get('max_byes', 2)
+    #     self.auto_export = kwargs.get('auto_export', False)
+    #     self.standings_export = kwargs.get(
+    #         'standings_export', StandingsExport())
+
+    def __init__(self, pod_sizes=None, allow_bye=False, snake_pods=False, n_rounds = 5, max_byes=0, win_points=3, draw_points=1,
+                 second_place_points=2, third_place_points=1, fourth_place_points=0, bye_points=2,
+                 auto_export=False, standings_export=StandingsExport()):
+        self.pod_sizes = pod_sizes if pod_sizes else [4, 3]
+        self.allow_bye = allow_bye
+        self.max_byes = max_byes
+        self.win_points = win_points
+        self.bye_points = bye_points
+        self.draw_points = draw_points
+        self.snake_pods = snake_pods
+        self.second_place_points = second_place_points
+        self.third_place_points = third_place_points
+        self.fourth_place_points = fourth_place_points
+        self.n_rounds = n_rounds
+        self.standings_export = standings_export
+        self.auto_export = auto_export
 
     @property
     def min_pod_size(self):
         return min(self.pod_sizes)
 
-    def ranking(_, x):
+    def ranking(self, x):
         return (
             x.points,
             x.games_played,
@@ -398,7 +415,7 @@ class TournamentConfiguration:
             -x.ID
         )
 
-    def matching(_, x):
+    def matching(self, x):
         return (
             -x.games_played,
             x.points,
@@ -562,6 +579,33 @@ class Tournament:
             for p in players:
                 Log.log('Reporting player {} won this round.'.format(p.name))
             self.round.won(players)
+
+    @TournamentAction.action
+    def report_second_place(self, players: list[Player] = []):
+        if self.round:
+            if not isinstance(players, list):
+                players = [players]
+            for p in players:
+                Log.log('Reporting player {} got second this round.'.format(p.name))
+            self.round.second_place(players)
+
+    @TournamentAction.action
+    def report_third_place(self, players: list[Player] = []):
+        if self.round:
+            if not isinstance(players, list):
+                players = [players]
+            for p in players:
+                Log.log('Reporting player {} got second this round.'.format(p.name))
+            self.round.third_place(players)
+
+    @TournamentAction.action
+    def report_fourth_place(self, players: list[Player] = []):
+        if self.round:
+            if not isinstance(players, list):
+                players = [players]
+            for p in players:
+                Log.log('Reporting player {} got second this round.'.format(p.name))
+            self.round.fourth_place(players)
 
     @TournamentAction.action
     def report_draw(self, players: list[Player] = []):
@@ -1370,6 +1414,51 @@ class Round:
 
                 pod.won = player
                 pod.done = True
+
+            if self.done:
+                self.conclude()
+
+    def second_place(self, players: list[Player] = []):
+        for player in players:
+            pod = player.pod
+
+            if not player or not pod:
+                Log.log('Player {} not found in any pod'.format(
+                    player.name), Log.Level.WARNING)
+                continue
+
+            if not pod.done:
+                player.points = player.points + self.tour.TC.second_place_points
+
+            if self.done:
+                self.conclude()
+
+    def third_place(self, players: list[Player] = []):
+        for player in players:
+            pod = player.pod
+
+            if not player or not pod:
+                Log.log('Player {} not found in any pod'.format(
+                    player.name), Log.Level.WARNING)
+                continue
+
+            if not pod.done:
+                player.points = player.points + self.tour.TC.third_place_points
+
+            if self.done:
+                self.conclude()
+
+    def fourth_place(self, players: list[Player] = []):
+        for player in players:
+            pod = player.pod
+
+            if not player or not pod:
+                Log.log('Player {} not found in any pod'.format(
+                    player.name), Log.Level.WARNING)
+                continue
+
+            if not pod.done:
+                player.points = player.points + self.tour.TC.fourth_place_points
 
             if self.done:
                 self.conclude()
