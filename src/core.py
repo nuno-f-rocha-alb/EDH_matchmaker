@@ -83,6 +83,7 @@ class StandingsExport:
         GAMES = 10  # Number of games played
         SEAT_HISTORY = 11  # Seat record
         AVG_SEAT = 12  # Average seat
+        PLACEMENTS = 13  # Add this line for player placements
 
     class Format(Enum):
         TXT = 0
@@ -181,6 +182,13 @@ class StandingsExport:
             'description': 'Player\'s record',
             'getter': lambda p: p.record
         }),
+        Field.PLACEMENTS: Json2Obj({
+            'name': 'placements',
+            'format': '{:s}',
+            'denom': None,
+            'description': 'Positions acquired by the player in each game',
+            'getter': lambda p: ', '.join(p.positions)  # Save placements as a comma-separated string
+        }),  # Add this block
     }
 
     ext = {
@@ -198,6 +206,7 @@ class StandingsExport:
         Field.OPP_BEATEN,
         Field.SEAT_HISTORY,
         Field.AVG_SEAT,
+        Field.PLACEMENTS  # Add this line if you want it in the default export
     ]
 
     def __init__(self, fields=None, format: Format = Format.TXT, dir: Union[str, None] = None):
@@ -587,7 +596,7 @@ class Tournament:
                 players = [players]
             for p in players:
                 Log.log('Reporting player {} got second this round.'.format(p.name))
-            self.round.second_place(players)
+            self.round.set_position("2", self.TC.second_place_points, players)
 
     @TournamentAction.action
     def report_third_place(self, players: list[Player] = []):
@@ -596,7 +605,7 @@ class Tournament:
                 players = [players]
             for p in players:
                 Log.log('Reporting player {} got third this round.'.format(p.name))
-            self.round.third_place(players)
+            self.round.set_position( "3", self.TC.third_place_points, players)
 
     @TournamentAction.action
     def report_fourth_place(self, players: list[Player] = []):
@@ -605,7 +614,7 @@ class Tournament:
                 players = [players]
             for p in players:
                 Log.log('Reporting player {} got fourth this round.'.format(p.name))
-            self.round.fourth_place(players)
+            self.round.set_position("4", self.TC.fourth_place_points, players)
 
     @TournamentAction.action
     def report_draw(self, players: list[Player] = []):
@@ -819,6 +828,10 @@ class Player:
         self.game_loss = False
         self.pods = []
         self.byes = 0
+        self.positions = []  # Add this line to store positions
+
+    def add_position(self, position):
+        self.positions.append(position)
 
     @property
     def average_seat(self):
@@ -1410,7 +1423,8 @@ class Round:
                 continue
 
             if not pod.done:
-                player.points = player.points + self.tour.TC.win_points
+                player.points += self.tour.TC.win_points
+                player.add_position("1")
 
                 pod.won = player
                 pod.done = True
@@ -1418,50 +1432,63 @@ class Round:
             if self.done:
                 self.conclude()
 
-    def second_place(self, players: list[Player] = []):
+    def set_position(self, position: str, points: int, players: list[Player] = []):
         for player in players:
             pod = player.pod
 
             if not player or not pod:
                 Log.log('Player {} not found in any pod'.format(
                     player.name), Log.Level.WARNING)
-                continue
+                return
 
             if not pod.done:
-                player.points = player.points + self.tour.TC.second_place_points
+                player.points += points
+                player.add_position(position)
 
-            if self.done:
-                self.conclude()
-
-    def third_place(self, players: list[Player] = []):
-        for player in players:
-            pod = player.pod
-
-            if not player or not pod:
-                Log.log('Player {} not found in any pod'.format(
-                    player.name), Log.Level.WARNING)
-                continue
-
-            if not pod.done:
-                player.points = player.points + self.tour.TC.third_place_points
-
-            if self.done:
-                self.conclude()
-
-    def fourth_place(self, players: list[Player] = []):
-        for player in players:
-            pod = player.pod
-
-            if not player or not pod:
-                Log.log('Player {} not found in any pod'.format(
-                    player.name), Log.Level.WARNING)
-                continue
-
-            if not pod.done:
-                player.points = player.points + self.tour.TC.fourth_place_points
-
-            if self.done:
-                self.conclude()
+    # def second_place(self, players: list[Player] = []):
+    #     for player in players:
+    #         pod = player.pod
+    #
+    #         if not player or not pod:
+    #             Log.log('Player {} not found in any pod'.format(
+    #                 player.name), Log.Level.WARNING)
+    #             continue
+    #
+    #         if not pod.done:
+    #             player.points = player.points + self.tour.TC.second_place_points
+    #
+    #         if self.done:
+    #             self.conclude()
+    #
+    # def third_place(self, players: list[Player] = []):
+    #     for player in players:
+    #         pod = player.pod
+    #
+    #         if not player or not pod:
+    #             Log.log('Player {} not found in any pod'.format(
+    #                 player.name), Log.Level.WARNING)
+    #             continue
+    #
+    #         if not pod.done:
+    #             player.points = player.points + self.tour.TC.third_place_points
+    #
+    #         if self.done:
+    #             self.conclude()
+    #
+    # def fourth_place(self, players: list[Player] = []):
+    #     for player in players:
+    #         pod = player.pod
+    #
+    #         if not player or not pod:
+    #             Log.log('Player {} not found in any pod'.format(
+    #                 player.name), Log.Level.WARNING)
+    #             continue
+    #
+    #         if not pod.done:
+    #             player.points = player.points + self.tour.TC.fourth_place_points
+    #
+    #         if self.done:
+    #             self.conclude()
 
     def draw(self, players: list[Player] = []):
         for player in players:
